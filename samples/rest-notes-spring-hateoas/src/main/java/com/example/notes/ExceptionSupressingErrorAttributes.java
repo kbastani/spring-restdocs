@@ -16,13 +16,11 @@
 
 package com.example.notes;
 
-import java.util.Map;
-
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 
-@Component
+import java.util.Map;
+
 class ExceptionSupressingErrorAttributes extends DefaultErrorAttributes {
 
 	@Override

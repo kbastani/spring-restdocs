@@ -16,13 +16,16 @@
 
 package com.example.notes;
 
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.CrudRepository;
 
-public interface NoteRepository extends CrudRepository<Note, Long> {
+@RepositoryRestResource(collectionResourceRel = "notes", path = "notes")
+public interface NoteRepository extends PagingAndSortingRepository<Note, Long> {
 
 	Optional<Note> findById(long id);
 

@@ -16,22 +16,9 @@
 
 package com.example.notes;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.RestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +33,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.*;
+import static org.springframework.restdocs.RestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = RestNotesSpringHateoas.class)
@@ -89,10 +82,10 @@ public class GettingStartedDocumentation {
 
 		String taggedNoteLocation = createTaggedNote(tagLocation);
 		MvcResult taggedNote = getNote(taggedNoteLocation);
-		getTags(getLink(taggedNote, "note-tags"));
+		getTags(getLink(taggedNote, "tags"));
 
 		tagExistingNote(noteLocation, tagLocation);
-		getTags(getLink(note, "note-tags"));
+		getTags(getLink(note, "tags"));
 	}
 
 	String createNote() throws Exception {
@@ -115,7 +108,7 @@ public class GettingStartedDocumentation {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("title", is(notNullValue())))
 				.andExpect(jsonPath("body", is(notNullValue())))
-				.andExpect(jsonPath("_links.note-tags", is(notNullValue())))
+				.andExpect(jsonPath("_links.tags", is(notNullValue())))
 				.andReturn();
 	}
 
@@ -125,7 +118,7 @@ public class GettingStartedDocumentation {
 
 		String tagLocation = this.mockMvc
 				.perform(
-						post("/tags").contentType(MediaTypes.HAL_JSON).content(
+						post("/tags").contentType("application/json").content(
 								objectMapper.writeValueAsString(tag)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("Location", notNullValue()))
@@ -136,7 +129,7 @@ public class GettingStartedDocumentation {
 	void getTag(String tagLocation) throws Exception {
 		this.mockMvc.perform(get(tagLocation)).andExpect(status().isOk())
 			.andExpect(jsonPath("name", is(notNullValue())))
-			.andExpect(jsonPath("_links.tagged-notes", is(notNullValue())));
+			.andExpect(jsonPath("_links.notes", is(notNullValue())));
 	}
 
 	String createTaggedNote(String tag) throws Exception {
@@ -147,7 +140,7 @@ public class GettingStartedDocumentation {
 
 		String noteLocation = this.mockMvc
 				.perform(
-						post("/notes").contentType(MediaTypes.HAL_JSON).content(
+						post("/notes").contentType("application/json").content(
 								objectMapper.writeValueAsString(note)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("Location", notNullValue()))

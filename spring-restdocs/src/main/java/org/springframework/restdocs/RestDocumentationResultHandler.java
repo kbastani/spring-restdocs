@@ -16,20 +16,16 @@
 
 package org.springframework.restdocs;
 
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequestAndResponse;
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlResponse;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
+import org.springframework.restdocs.hypermedia.*;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.restdocs.hypermedia.HypermediaDocumentation;
-import org.springframework.restdocs.hypermedia.LinkDescriptor;
-import org.springframework.restdocs.hypermedia.LinkExtractor;
-import org.springframework.restdocs.hypermedia.LinkExtractors;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultHandler;
+import static org.springframework.restdocs.curl.CurlDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentSchema;
 
 /**
  * A Spring MVC Test {@code ResultHandler} for documenting RESTful APIs.
@@ -77,6 +73,25 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		return withLinks(null, descriptors);
 	}
 
+    /**
+     * Document the schema of a resource in the response using the given {@code descriptors}.
+     * The properties are extracted from the response based on its content type. Which must be
+     * {@code application/schema+json}.
+     * <p>
+     * If a schema is present in the response but is not described by one of its descriptors
+     * a failure will occur when this handler is invoked. Similarly, if a schema property is
+     * described but is not present in the response a failure will also occur when this handler
+     * is invoked.
+     *
+     * @param descriptor the schema property descriptors
+     * @return {@code this}
+     * @see HypermediaDocumentation#schemaForResource(String)
+     * @see SchemaExtractors#extractorForContentType(String)
+     */
+    public RestDocumentationResultHandler withSchema(SchemaDescriptor descriptor) {
+        return withSchema(null, descriptor);
+    }
+
 	/**
 	 * Document the links in the response using the given {@code descriptors}. The links
 	 * are extracted from the response using the given {@code linkExtractor}.
@@ -96,5 +111,26 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		this.delegates.add(documentLinks(this.outputDir, linkExtractor, descriptors));
 		return this;
 	}
+
+    /**
+     * Document the schema of a resource in the response using the given {@code descriptors}.
+     * The properties are extracted from the response based on its content type. Which must be
+     * {@code application/schema+json}.
+     * <p>
+     * If a schema is present in the response but is not described by one of its descriptors
+     * a failure will occur when this handler is invoked. Similarly, if a schema property is
+     * described but is not present in the response a failure will also occur when this handler
+     * is invoked.
+     *
+     * @param descriptor the schema property descriptors
+     * @return {@code this}
+     * @see HypermediaDocumentation#schemaForResource(String)
+     * @see SchemaExtractors#extractorForContentType(String)
+     */
+    public RestDocumentationResultHandler withSchema(SchemaExtractor schemaExtractor,
+            SchemaDescriptor descriptor) {
+        this.delegates.add(documentSchema(this.outputDir, schemaExtractor, descriptor));
+        return this;
+    }
 
 }

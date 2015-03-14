@@ -50,7 +50,10 @@ include::{generated}/index/1/response.asciidoc[]
 
 Note the `_links` in the JSON response. They are key to navigating the API.
 
+[note-schema]
+== Note schema
 
+include::{generated}/notes-schema/schemas.asciidoc[]
 
 [getting-started-creating-a-note]
 == Creating a note

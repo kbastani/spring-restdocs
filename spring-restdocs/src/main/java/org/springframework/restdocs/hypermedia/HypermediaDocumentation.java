@@ -16,14 +16,15 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import java.util.Arrays;
-
 import org.springframework.restdocs.RestDocumentationResultHandler;
 
+import java.util.Arrays;
+
 /**
- * Static factory methods for documenting a RESTful API that utilises Hypermedia.
+ * Static factory methods for documenting a RESTful API that utilizes Hypermedia.
  * 
  * @author Andy Wilkinson
+ * @author Kenny Bastani
  */
 public abstract class HypermediaDocumentation {
 
@@ -43,21 +44,49 @@ public abstract class HypermediaDocumentation {
 		return new LinkDescriptor(rel);
 	}
 
-	/**
-	 * Creates a {@code LinkSnippetResultHandler} that will produce a documentation
-	 * snippet for a response's links.
-	 * 
-	 * @param outputDir The directory to which the snippet should be written
-	 * @param linkExtractor Used to extract the links from the response
-	 * @param descriptors The descriptions of the response's links
-	 * @return the handler
-	 * @see RestDocumentationResultHandler#withLinks(LinkDescriptor...)
-	 * @see RestDocumentationResultHandler#withLinks(LinkExtractor, LinkDescriptor...)
-	 */
-	public static LinkSnippetResultHandler documentLinks(String outputDir,
-			LinkExtractor linkExtractor, LinkDescriptor... descriptors) {
-		return new LinkSnippetResultHandler(outputDir, linkExtractor,
-				Arrays.asList(descriptors));
-	}
+    /**
+     * Creates a {@code LinkSnippetResultHandler} that will produce a documentation
+     * snippet for a response's links.
+     *
+     * @param outputDir The directory to which the snippet should be written
+     * @param linkExtractor Used to extract the links from the response
+     * @param descriptors The descriptions of the response's links
+     * @return the handler
+     * @see RestDocumentationResultHandler#withLinks(LinkDescriptor...)
+     * @see RestDocumentationResultHandler#withLinks(LinkExtractor, LinkDescriptor...)
+     */
+    public static LinkSnippetResultHandler documentLinks(String outputDir,
+            LinkExtractor linkExtractor, LinkDescriptor... descriptors) {
+        return new LinkSnippetResultHandler(outputDir, linkExtractor,
+                Arrays.asList(descriptors));
+    }
+
+    /**
+     * Creates a {@code SchemaDescriptor} that describes a schema with the given {@code resource}.
+     *
+     * @param resource The name of the resource
+     * @return a {@code SchemaDescriptor} ready for further configuration
+     * @see RestDocumentationResultHandler#withSchema(SchemaDescriptor)
+     * @see RestDocumentationResultHandler#withSchema(SchemaExtractor, SchemaDescriptor)
+     */
+    public static SchemaDescriptor schemaForResource(String resource) {
+        return new SchemaDescriptor(resource);
+    }
+
+    /**
+     * Creates a {@code SchemaSnippetResultHandler} that will produce a documentation
+     * snippet for a resource's JSON hyperschema definition.
+     *
+     * @param outputDir The directory to which the snippet should be written
+     * @param schemaExtractor Used to extract the schema properties from the response
+     * @param descriptor The description of the response's schema properties
+     * @return the handler
+     * @see RestDocumentationResultHandler#withSchema(SchemaDescriptor)
+     * @see RestDocumentationResultHandler#withSchema(SchemaExtractor, SchemaDescriptor)
+     */
+    public static SchemaSnippetResultHandler documentSchema(String outputDir,
+            SchemaExtractor schemaExtractor, SchemaDescriptor descriptor) {
+        return new SchemaSnippetResultHandler(outputDir, schemaExtractor, descriptor);
+    }
 
 }

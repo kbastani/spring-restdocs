@@ -16,16 +16,13 @@
 
 package com.example.notes;
 
-import java.io.IOException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-@ControllerAdvice
 public class RestNotesControllerAdvice {
 
 	@ExceptionHandler(IllegalArgumentException.class)

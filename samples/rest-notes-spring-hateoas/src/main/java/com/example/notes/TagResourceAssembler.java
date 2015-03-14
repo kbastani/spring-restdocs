@@ -16,15 +16,12 @@
 
 package com.example.notes;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
+import com.example.notes.TagResourceAssembler.TagResource;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.stereotype.Component;
 
-import com.example.notes.TagResourceAssembler.TagResource;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-@Component
 public class TagResourceAssembler extends ResourceAssemblerSupport<Tag, TagResource> {
 
 	public TagResourceAssembler() {

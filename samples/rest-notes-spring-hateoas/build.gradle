@@ -27,6 +27,7 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compile 'org.springframework.hateoas:spring-hateoas'
+    compile 'org.springframework.boot:spring-boot-starter-data-rest'
 
 	runtime 'com.h2database:h2'
 	runtime 'org.springframework.plugin:spring-plugin-core:1.1.0.RELEASE'
@@ -34,7 +35,7 @@ dependencies {
 
 	testCompile 'com.jayway.jsonpath:json-path'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.restdocs:spring-restdocs:0.1.0.BUILD-SNAPSHOT'
+	testCompile 'org.springframework.restdocs:spring-restdocs:0.1.1.BUILD-SNAPSHOT'
 }
 
 ext {

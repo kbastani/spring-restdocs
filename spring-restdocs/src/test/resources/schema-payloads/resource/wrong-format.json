@@ -1,0 +1,25 @@
+{
+  "name" : "com.example.notes.Note",
+  "description" : "rest.description.note",
+  "links" : [ {
+    "rel" : "tags",
+    "href" : "http://localhost:8080/notes/tags"
+  } ],
+  "properties" : [
+     {
+      "type" : "long",
+      "description" : "rest.description.note.id",
+      "required" : false
+    },
+    {
+      "type" : "string",
+      "description" : "rest.description.note.title",
+      "required" : false
+    },
+    {
+      "type" : "string",
+      "description" : "rest.description.note.body",
+      "required" : false
+    }]
+  }
+}

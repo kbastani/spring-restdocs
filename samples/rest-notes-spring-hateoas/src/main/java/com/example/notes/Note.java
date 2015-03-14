@@ -16,31 +16,37 @@
 
 package com.example.notes;
 
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-public class Note {
+public class Note implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
+    protected Note() {
+
+    }
+
+    public Note(String title, String body) {
+        super();
+        this.title = title;
+        this.body = body;
+    }
+
+    @Column
 	private String title;
 
+    @Column
 	private String body;
 
 	@ManyToMany
 	private List<Tag> tags;
 
-	@JsonIgnore
 	public long getId() {
 		return id;
 	}
@@ -65,7 +71,6 @@ public class Note {
 		this.body = body;
 	}
 
-	@JsonIgnore
 	public List<Tag> getTags() {
 		return tags;
 	}

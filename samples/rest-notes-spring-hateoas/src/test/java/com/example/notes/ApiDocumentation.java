@@ -16,23 +16,7 @@
 
 package com.example.notes;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.RestDocumentation.document;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +30,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.RequestDispatcher;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.RestDocumentation.document;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.schemaForResource;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = RestNotesSpringHateoas.class)
@@ -90,15 +87,25 @@ public class ApiDocumentation {
 			.andDo(document("error-example"));
 	}
 
+    @Test
+    public void schemaNoteExample() throws Exception {
+        this.mockMvc.perform(get("/notes/schema").accept("application/schema+json"))
+                .andExpect(status().isOk())
+                .andDo(document("notes-schema").withSchema(schemaForResource("notes")
+                .description("The <<resources-notes,Notes resource>>")));
+    }
+
 	@Test
 	public void indexExample() throws Exception {
-		this.mockMvc.perform(get("/"))
+		this.mockMvc.perform(get("/").accept("application/hal+json"))
 			.andExpect(status().isOk())
 			.andDo(document("index-example").withLinks(
 						linkWithRel("notes").description(
 								"The <<resources-notes,Notes resource>>"),
 						linkWithRel("tags").description(
-								"The <<resources-tags,Tags resource>>")));
+								"The <<resources-tags,Tags resource>>"),
+                        linkWithRel("profile").description(
+                                "The <<resources-profile,Profile resource>>")));
 	}
 
 	@Test
@@ -169,11 +176,11 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("title", is(note.get("title"))))
 			.andExpect(jsonPath("body", is(note.get("body"))))
 			.andExpect(jsonPath("_links.self.href", is(noteLocation)))
-			.andExpect(jsonPath("_links.note-tags", is(notNullValue())))
+			.andExpect(jsonPath("_links.tags", is(notNullValue())))
 			.andDo(document("note-get-example").withLinks(
 						linkWithRel("self").description("This <<resources-note,note>>"),
-						linkWithRel("note-tags").description(
-								"This note's <<resources-note-tags,tags>>")));
+						linkWithRel("tags").description(
+								"This note's <<resources-tags,tags>>")));
 
 	}
 
@@ -220,7 +227,7 @@ public class ApiDocumentation {
 				.andExpect(jsonPath("title", is(note.get("title"))))
 				.andExpect(jsonPath("body", is(note.get("body"))))
 				.andExpect(jsonPath("_links.self.href", is(noteLocation)))
-				.andExpect(jsonPath("_links.note-tags", is(notNullValue())));
+				.andExpect(jsonPath("_links.tags", is(notNullValue())));
 
 		Map<String, String> tag = new HashMap<String, String>();
 		tag.put("name", "REST");
@@ -254,12 +261,12 @@ public class ApiDocumentation {
 				.andExpect(status().isCreated()).andReturn().getResponse()
 				.getHeader("Location");
 
-		this.mockMvc.perform(get(tagLocation))
+		this.mockMvc.perform(get(tagLocation).contentType(MediaTypes.HAL_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example").withLinks(
 						linkWithRel("self").description("This <<resources-tag,tag>>"),
-						linkWithRel("tagged-notes")
+						linkWithRel("notes")
 								.description(
 										"The <<resources-tagged-notes,notes>> that have this tag")));
 	}

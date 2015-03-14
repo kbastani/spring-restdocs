@@ -16,18 +16,17 @@
 
 package com.example.notes;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/")
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+@Component
 public class IndexController {
 
-	@RequestMapping(method=RequestMethod.GET)
+    @RequestMapping(method= RequestMethod.GET)
 	public ResourceSupport index() {
 		ResourceSupport index = new ResourceSupport();
 		index.add(linkTo(NotesController.class).withRel("notes"));

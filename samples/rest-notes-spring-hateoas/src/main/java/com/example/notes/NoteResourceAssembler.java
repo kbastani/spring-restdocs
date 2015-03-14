@@ -16,15 +16,12 @@
 
 package com.example.notes;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
+import com.example.notes.NoteResourceAssembler.NoteResource;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.stereotype.Component;
 
-import com.example.notes.NoteResourceAssembler.NoteResource;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-@Component
 public class NoteResourceAssembler extends ResourceAssemblerSupport<Note, NoteResource> {
 
 	public NoteResourceAssembler() {
